@@ -12,32 +12,47 @@ import { tap } from 'rxjs/operators';
 })
 export class CustomersListComponent implements OnInit {
   displayedColumns = ["id", "name", "phone", "country", "isValid"];
+  countries = ["All", "Cameroon", "Ethiopia", "Morocco", "Mozambique", "Uganda"];
+  states = ["All", "Not Valid", "Valid"];
+
   customers: Customer[];
+  customersCount: number;
+
+  filterCountry: string = '';
+  filterState: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-
   constructor(private customersService: CustomersService) {
-    this.customers = []
+    this.customers = [];
+    this.customersCount = 0;
   }
 
   ngOnInit(): void {
-    const searchObject: SearchObject = { page: 1, numPerPage: 10, filterCountry: 'cameroon', filterState: true };
+    const searchObject: SearchObject = { page: 0, numPerPage: 5, filterCountry: 'Cameroon', filterState: true };
     this.customersService.fetchCustomers(searchObject).subscribe((customers: Customer[]) => this.customers = customers);
+    this.customersService.fetchCustomersCount(searchObject).subscribe((count: number) => this.customersCount = count);
   }
 
   ngAfterViewInit() {
+
+    this.paginator.page.pipe(
+      tap(() => this.customersService.fetchCustomers(this.getSearchObject())
+        .subscribe((customers: Customer[]) => {
+          this.customers = customers
+        }))
+    ).subscribe();;
+  }
+
+  getSearchObject = (): SearchObject => {
     const searchObject: SearchObject = {
       page: this.paginator.pageIndex,
       numPerPage: this.paginator.pageSize,
-      filterCountry: 'cameroon',
+      filterCountry: 'Cameroon',
       filterState: true
     };
-
-    this.paginator.page.pipe(
-      tap(() => this.customersService.fetchCustomers(searchObject)
-        .subscribe((customers: Customer[]) => this.customers = customers))
-    );
+    console.log(searchObject)
+    return searchObject;
   }
 
 }

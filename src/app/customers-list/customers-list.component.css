@@ -1,0 +1,9 @@
+.filters-cont {
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.filter-item {
+  padding: 10px;
+}

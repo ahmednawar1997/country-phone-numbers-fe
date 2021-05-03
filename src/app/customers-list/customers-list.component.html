@@ -1,8 +1,26 @@
 <div class="mat-elevation-z8">
-  <table mat-table [dataSource]="customers">
+  <div class="filters-cont">
+    <mat-form-field appearance="fill" class="filter-item">
+      <mat-label>Country</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let country of countries" [value]="country">
+          {{country}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
+    <mat-form-field appearance="fill" class="filter-item">
+      <mat-label>State</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let state of states" [value]="state">
+          {{state}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <table mat-table [dataSource]="customers" style="width: 100%">
     <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef> No. </th>
+      <th mat-header-cell *matHeaderCellDef> # </th>
       <td mat-cell *matCellDef="let element"> {{element.id}} </td>
     </ng-container>
 
@@ -17,7 +35,7 @@
     </ng-container>
 
     <ng-container matColumnDef="country">
-      <th mat-header-cell *matHeaderCellDef> country </th>
+      <th mat-header-cell *matHeaderCellDef> Country </th>
       <td mat-cell *matCellDef="let element"> {{element.country}} </td>
     </ng-container>
 
@@ -30,5 +48,5 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <mat-paginator [length]="customers.length" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  <mat-paginator [length]="customersCount" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
 </div>
