@@ -4,6 +4,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { Customer } from './Customer.model';
 import { MatPaginator } from '@angular/material/paginator';
 import { tap } from 'rxjs/operators';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'app-customers-list',
@@ -12,14 +13,14 @@ import { tap } from 'rxjs/operators';
 })
 export class CustomersListComponent implements OnInit {
   displayedColumns = ["id", "name", "phone", "country", "isValid"];
-  countries = ["All", "Cameroon", "Ethiopia", "Morocco", "Mozambique", "Uganda"];
-  states = ["All", "Not Valid", "Valid"];
+  countries = ["", "Cameroon", "Ethiopia", "Morocco", "Mozambique", "Uganda"];
+  states = ["", "true", "false"];
 
   customers: Customer[];
   customersCount: number;
 
   filterCountry: string = '';
-  filterState: boolean = false;
+  filterState: string = '';
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -29,30 +30,42 @@ export class CustomersListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const searchObject: SearchObject = { page: 0, numPerPage: 5, filterCountry: 'Cameroon', filterState: true };
-    this.customersService.fetchCustomers(searchObject).subscribe((customers: Customer[]) => this.customers = customers);
-    this.customersService.fetchCustomersCount(searchObject).subscribe((count: number) => this.customersCount = count);
+    const searchObject: SearchObject = { page: 0, numPerPage: 5 };
+    this.customersService.customersChanged.subscribe((customers: Customer[]) => this.customers = customers);
+    this.customersService.countChanged.subscribe((count: number) => this.customersCount = count);
+    this.fetchNewData(searchObject);
   }
 
   ngAfterViewInit() {
 
     this.paginator.page.pipe(
-      tap(() => this.customersService.fetchCustomers(this.getSearchObject())
-        .subscribe((customers: Customer[]) => {
-          this.customers = customers
-        }))
-    ).subscribe();;
+      tap(() => this.customersService.fetchCustomers(this.getSearchObject()))
+    ).subscribe();
   }
 
   getSearchObject = (): SearchObject => {
     const searchObject: SearchObject = {
       page: this.paginator.pageIndex,
       numPerPage: this.paginator.pageSize,
-      filterCountry: 'Cameroon',
-      filterState: true
+      filterCountry: this.filterCountry,
+      filterState: this.filterState
     };
-    console.log(searchObject)
     return searchObject;
+  }
+
+  onCountryChange = (countryEvent: MatSelectChange) => {
+    this.filterCountry = countryEvent.value;
+    this.fetchNewData(this.getSearchObject());
+  }
+  onStateChange = (stateEvent: MatSelectChange) => {
+    this.filterState = stateEvent.value;
+    this.fetchNewData(this.getSearchObject());
+  }
+
+  fetchNewData = (searchObject: SearchObject) => {
+    console.log(searchObject)
+    this.customersService.fetchCustomersCount(searchObject);
+    this.customersService.fetchCustomers(searchObject);
   }
 
 }

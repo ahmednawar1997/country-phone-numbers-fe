@@ -1,6 +1,6 @@
 import { SearchObject } from './../searchObject.model';
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, Subject } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 
 import { catchError, tap } from 'rxjs/operators';
@@ -11,27 +11,33 @@ import { Customer } from './Customer.model';
 })
 export class CustomersService {
 
+  customersChanged = new Subject<Customer[]>();
+  countChanged = new Subject<number>();
+
   constructor(private http: HttpClient) { }
 
-  fetchCustomers = (searchObject: SearchObject): Observable<Customer[]> => {
-    console.log(searchObject)
-    return this.http.get<Customer[]>('http://localhost:99', {
+  fetchCustomers = (searchObject: SearchObject): void => {
+    this.http.get<Customer[]>('http://localhost:99', {
       params: new HttpParams()
         .set('page', searchObject.page.toString())
         .set('numPerPage', searchObject.numPerPage.toString())
-        .set('state', searchObject.filterState.toString())
-        .set('country', searchObject.filterCountry.toString())
+        .set('state', searchObject.filterState ? searchObject.filterState.toString() : '')
+        .set('country', searchObject.filterCountry ? searchObject.filterCountry.toString() : '')
     })
-      .pipe(catchError(this.errorHandler));
+      .pipe(catchError(this.errorHandler))
+      .subscribe((customers: Customer[]) => this.customersChanged.next(customers));
+
   }
 
-  fetchCustomersCount = (searchObject: SearchObject): Observable<number> => {
-    return this.http.get<number>('http://localhost:99/count', {
+  fetchCustomersCount = (searchObject: SearchObject): void => {
+    console.log(searchObject)
+    this.http.get<number>('http://localhost:99/count', {
       params: new HttpParams()
-        .set('state', searchObject.filterState.toString())
-        .set('country', searchObject.filterCountry.toString())
+        .set('state', searchObject.filterState ? searchObject.filterState.toString() : '')
+        .set('country', searchObject.filterCountry ? searchObject.filterCountry.toString() : '')
     })
-      .pipe(catchError(this.errorHandler));
+      .pipe(catchError(this.errorHandler))
+      .subscribe((count: number) => this.countChanged.next(count));
   }
 
 

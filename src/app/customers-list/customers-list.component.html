@@ -2,7 +2,7 @@
   <div class="filters-cont">
     <mat-form-field appearance="fill" class="filter-item">
       <mat-label>Country</mat-label>
-      <mat-select>
+      <mat-select (selectionChange)="onCountryChange($event)">
         <mat-option *ngFor="let country of countries" [value]="country">
           {{country}}
         </mat-option>
@@ -11,7 +11,7 @@
 
     <mat-form-field appearance="fill" class="filter-item">
       <mat-label>State</mat-label>
-      <mat-select>
+      <mat-select (selectionChange)="onStateChange($event)">
         <mat-option *ngFor="let state of states" [value]="state">
           {{state}}
         </mat-option>
