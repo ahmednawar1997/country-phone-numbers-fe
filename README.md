@@ -7,3 +7,9 @@
 * Display the list of customers
 * Can filter using country and state
 * Can paginate the table to fetch correct data from server
+
+## How to run
+### Local
+* Run npm install in project directory
+* Run ng serve
+* Test on localhost:4200
