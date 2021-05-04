@@ -17,7 +17,7 @@ export class CustomersService {
   constructor(private http: HttpClient) { }
 
   fetchCustomers = (searchObject: SearchObject): void => {
-    this.http.get<Customer[]>('http://localhost:99', {
+    this.http.get<Customer[]>('http://localhost:8080', {
       params: new HttpParams()
         .set('page', searchObject.page.toString())
         .set('numPerPage', searchObject.numPerPage.toString())
@@ -31,7 +31,7 @@ export class CustomersService {
 
   fetchCustomersCount = (searchObject: SearchObject): void => {
     console.log(searchObject)
-    this.http.get<number>('http://localhost:99/count', {
+    this.http.get<number>('http://localhost:8080/count', {
       params: new HttpParams()
         .set('state', searchObject.filterState ? searchObject.filterState.toString() : '')
         .set('country', searchObject.filterCountry ? searchObject.filterCountry.toString() : '')

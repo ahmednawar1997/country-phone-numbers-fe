@@ -63,7 +63,6 @@ export class CustomersListComponent implements OnInit {
   }
 
   fetchNewData = (searchObject: SearchObject) => {
-    console.log(searchObject)
     this.customersService.fetchCustomersCount(searchObject);
     this.customersService.fetchCustomers(searchObject);
   }
