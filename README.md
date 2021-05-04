@@ -13,3 +13,13 @@
 * Run npm install in project directory
 * Run ng serve
 * Test on localhost:4200
+
+## Demo
+* ![Customers](demo/customers-list-5.PNG)
+* 
+* ![Customers](demo/customers-list-10.PNG)
+* 
+* ![Customers](demo/customers-list-filter.PNG)
+* 
+* ![Customers](demo/customers-list-filter2.PNG)
+
